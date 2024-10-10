@@ -14,7 +14,7 @@ const usuarioRoutes = require('./routes/usuarioRoutes');
 const productoRoutes = require('./routes/productoRoutes');
 const carritoRoutes = require('./routes/carritoRoutes');
 const comprasRoutes = require('./routes/comprasRoutes');
-
+const commentsRoutes = require('./routes/commentsRoutes');
 
 const app = express();
 
@@ -35,6 +35,7 @@ app.use('/api', usuarioRoutes);
 app.use('/api', productoRoutes);
 app.use('/api', carritoRoutes);
 app.use('/api', comprasRoutes);
+app.use('/api', commentsRoutes);
 
 app.listen(port, () => {
     console.log(`Se está ejecutando en localhost, puerto: ${port}`);
