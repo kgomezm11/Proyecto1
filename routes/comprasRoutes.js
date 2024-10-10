@@ -3,6 +3,7 @@ const { verifyToken } = require('../controllers/controllers');
 
 const CarritoSchema = require('../models/cart');
 const BitacoraSchema = require('../models/bitacora');
+const UsuarioSchema = require('../models/user');
 const { json } = require("body-parser");
 const CursosSchema = require('../models/curso');
 
@@ -61,8 +62,16 @@ router.post('/compra', verifyToken, async (req, res) => {
         // Eliminar el _id original, para que MongoDB genere uno nuevo
         delete cursoModificado._id;
 
+        const user = await UsuarioSchema.findOne({dpi: usuarioDpi});
+        if (user.tokens < cursoModificado.tokens) {
+            return res.status(400).json({ error: 'No tienes suficientes tokens para comprar este curso.' });
+        }
+        user.tokens -= cursoModificado.tokens;
+        await user.save();
+
         // Guardar el curso modificado en la colección de Bitacora
         const nuevoCursoEnBitacora = new BitacoraSchema(cursoModificado);
+
         await nuevoCursoEnBitacora.save();
 
         res.status(201).json({ mensaje: 'Producto creado con éxito en la bitácora' });
